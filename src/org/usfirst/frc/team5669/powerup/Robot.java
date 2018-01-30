@@ -24,6 +24,7 @@ public class Robot extends IterativeRobot {
 	private WPI_TalonSRX l1 = new WPI_TalonSRX(1), l2 = new WPI_TalonSRX(2), r3 = new WPI_TalonSRX(3), r4 = new WPI_TalonSRX(4);
 	private TankDrive drive = new TankDrive(l1, l2, r3, r4);
 	private Joystick stick = new Joystick(0);
+	private HardwareModule[] modules = { drive };
 	
 	/**
 	 * This function is run when the robot is first started up and should be
@@ -31,6 +32,9 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void robotInit() {
+		for(HardwareModule module : modules) {
+			module.setup();
+		}
 	}
 
 	/**
@@ -45,6 +49,9 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void autonomousPeriodic() {
+		for(HardwareModule module : modules) {
+			module.periodic();
+		}
 	}
 
 	/**
@@ -61,6 +68,10 @@ public class Robot extends IterativeRobot {
 	public void teleopPeriodic() {
 		// Y axis is upside-down, -1.0 is up and 1.0 is down.
 		drive.set(-stick.getY(), stick.getX());
+		
+		for(HardwareModule module : modules) {
+			module.periodic();
+		}
 	}
 
 	/**
@@ -68,5 +79,8 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void testPeriodic() {
+		for(HardwareModule module : modules) {
+			module.periodic();
+		}
 	}
 }
