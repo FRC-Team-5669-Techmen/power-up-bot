@@ -24,7 +24,8 @@ public class Robot extends IterativeRobot {
 	private WPI_TalonSRX l1 = new WPI_TalonSRX(1), l2 = new WPI_TalonSRX(2), r3 = new WPI_TalonSRX(3), r4 = new WPI_TalonSRX(4);
 	private TankDrive drive = new TankDrive(l1, l2, r3, r4);
 	private Joystick stick = new Joystick(0);
-	private HardwareModule[] modules = { drive };
+	private FMS2018 fms = new FMS2018();
+	private HardwareModule[] modules = { drive, fms };
 	
 	/**
 	 * This function is run when the robot is first started up and should be
@@ -32,6 +33,7 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void robotInit() {
+		System.out.println("Robot init called!");
 		for(HardwareModule module : modules) {
 			module.setup();
 		}
@@ -42,6 +44,9 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void autonomousInit() {
+		System.out.println("Autonomous init called!");
+		System.out.println("The nearest switch has our team on the " + fms.getNearPlate() + " side.");
+		System.out.println("The central switch has our team on the " + fms.getMidPlate() + " side.");
 	}
 
 	/**
