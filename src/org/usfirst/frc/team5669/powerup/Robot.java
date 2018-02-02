@@ -7,6 +7,8 @@
 
 package org.usfirst.frc.team5669.powerup;
 
+import org.usfirst.frc.team5669.powerup.autonomous.AutonomousQueue;
+
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
@@ -23,9 +25,10 @@ public class Robot extends IterativeRobot {
 	// WPI_TalonSRX is compatible with other WPILib motor controllers. TalonSRX has more functions but is less compatible.
 	private WPI_TalonSRX l1 = new WPI_TalonSRX(1), l2 = new WPI_TalonSRX(2), r3 = new WPI_TalonSRX(3), r4 = new WPI_TalonSRX(4);
 	private TankDrive drive = new TankDrive(l1, l2, r3, r4);
-	private Joystick stick = new Joystick(0);
 	private FMS2018 fms = new FMS2018();
 	private HardwareModule[] modules = { drive, fms };
+	private AutonomousQueue queue = new AutonomousQueue();
+	private Joystick stick = new Joystick(0);
 	
 	/**
 	 * This function is run when the robot is first started up and should be
@@ -47,6 +50,9 @@ public class Robot extends IterativeRobot {
 		System.out.println("Autonomous init called!");
 		System.out.println("The nearest switch has our team on the " + fms.getNearPlate() + " side.");
 		System.out.println("The central switch has our team on the " + fms.getMidPlate() + " side.");
+		
+		queue.clear();
+		// Insert code to build the autonomous queue here.
 	}
 
 	/**
@@ -54,6 +60,7 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void autonomousPeriodic() {
+		queue.periodic();
 		for(HardwareModule module : modules) {
 			module.periodic();
 		}
