@@ -7,6 +7,9 @@
 
 package org.usfirst.frc.team5669.powerup;
 
+import org.usfirst.frc.team5669.hardware.AnalogDistanceSensor;
+import org.usfirst.frc.team5669.hardware.HardwareModule;
+import org.usfirst.frc.team5669.hardware.TankDrive;
 import org.usfirst.frc.team5669.powerup.autonomous.AutonomousQueue;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;

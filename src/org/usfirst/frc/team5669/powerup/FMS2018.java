@@ -1,5 +1,7 @@
 package org.usfirst.frc.team5669.powerup;
 
+import org.usfirst.frc.team5669.hardware.HardwareModule;
+
 import edu.wpi.first.wpilibj.DriverStation;
 
 public class FMS2018 implements HardwareModule {

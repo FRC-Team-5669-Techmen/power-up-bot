@@ -1,5 +1,7 @@
 package org.usfirst.frc.team5669.powerup;
 
+import org.usfirst.frc.team5669.hardware.HardwareModule;
+
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 

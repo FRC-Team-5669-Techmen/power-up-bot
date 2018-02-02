@@ -1,4 +1,4 @@
-package org.usfirst.frc.team5669.powerup;
+package org.usfirst.frc.team5669.hardware;
 
 /**
  * A common interface for modules that abstract away pieces of hardware (e.g. mecanum drive, tank drive, claw, etc.)
