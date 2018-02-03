@@ -8,10 +8,15 @@
 package org.usfirst.frc.team5669.powerup;
 
 import org.usfirst.frc.team5669.autonomous.AutonomousQueue;
+import org.usfirst.frc.team5669.autonomous.AutonomousStep;
+import org.usfirst.frc.team5669.autonomous.DistanceLessThanWait;
+import org.usfirst.frc.team5669.autonomous.StartTankDriveStep;
+import org.usfirst.frc.team5669.autonomous.StopTankDriveStep;
 import org.usfirst.frc.team5669.hardware.AnalogDistanceSensor;
 import org.usfirst.frc.team5669.hardware.HardwareModule;
 import org.usfirst.frc.team5669.hardware.TankDrive;
 
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
@@ -28,6 +33,7 @@ public class Robot extends IterativeRobot {
 	// WPI_TalonSRX is compatible with other WPILib motor controllers. TalonSRX has more functions but is less compatible.
 	private WPI_TalonSRX l1 = new WPI_TalonSRX(1), l2 = new WPI_TalonSRX(2), r3 = new WPI_TalonSRX(3), r4 = new WPI_TalonSRX(4);
 	private TankDrive drive = new TankDrive(l1, l2, r3, r4);
+	private Lift lift = new Lift(new TalonSRX(20));
 	private AnalogDistanceSensor frontDist = new AnalogDistanceSensor(0), rightDist = new AnalogDistanceSensor(1), 
 			backDist = new AnalogDistanceSensor(2), leftDist = new AnalogDistanceSensor(3);
 	private FMS2018 fms = new FMS2018();
@@ -58,6 +64,16 @@ public class Robot extends IterativeRobot {
 		
 		queue.clear();
 		// Insert code to build the autonomous queue here.
+		// For dropping a cube when starting on the right side.
+		AutonomousStep[] steps = {
+				new StartTankDriveStep(drive, 0.4, 0.0), // Go forward
+				new DistanceLessThanWait(frontDist, 24.0), // Until in front of the switch
+				new StopTankDriveStep(drive),
+				new SpitStep(lift)
+		};
+		for(AutonomousStep step : steps) {
+			queue.add(step);
+		}
 	}
 
 	/**

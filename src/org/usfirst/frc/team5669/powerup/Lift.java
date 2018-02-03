@@ -13,6 +13,10 @@ public class Lift implements HardwareModule {
 	private TalonSRX liftMotor;
 	private int target = 0;
 	
+	public Lift(TalonSRX liftMotor) {
+		this.liftMotor = liftMotor;
+	}
+	
 	/**
 	 * Converts sensor counts into how high the lift is in inches.
 	 * @param counts The counts returned by the sensor.
@@ -37,6 +41,14 @@ public class Lift implements HardwareModule {
 	 */
 	public void moveTo(double inches) {
 		target = inchesToCounts(inches);
+	}
+	
+	public void spit() {
+		// TODO: Method stub!
+	}
+	
+	public void suck() {
+		// TODO: Method stub!
 	}
 	
 	/**
