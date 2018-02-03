@@ -19,6 +19,8 @@ import org.usfirst.frc.team5669.hardware.TankDrive;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
+import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
 
@@ -40,6 +42,7 @@ public class Robot extends IterativeRobot {
 	private HardwareModule[] modules = { drive, fms, frontDist, rightDist, backDist, leftDist };
 	private AutonomousQueue queue = new AutonomousQueue();
 	private Joystick stick = new Joystick(0);
+	private DoubleSolenoid solenoid = new DoubleSolenoid(0, 1);
 	
 	/**
 	 * This function is run when the robot is first started up and should be
@@ -99,6 +102,20 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void teleopPeriodic() {
+		if(stick.getTrigger()) {
+			(new Compressor(0)).start();
+		} else {
+			(new Compressor(0)).stop();
+		}
+		
+		if(stick.getRawButton(5)) {
+			solenoid.set(DoubleSolenoid.Value.kReverse);
+		} else if(stick.getRawButton(3)) {
+			solenoid.set(DoubleSolenoid.Value.kForward);
+		} else {
+			solenoid.set(DoubleSolenoid.Value.kOff);
+		}
+		
 		// Y axis is upside-down, -1.0 is up and 1.0 is down.
 		drive.set(-stick.getY(), stick.getX());
 		
