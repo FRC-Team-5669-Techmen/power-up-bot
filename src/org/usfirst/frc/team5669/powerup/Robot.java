@@ -14,6 +14,8 @@ import org.usfirst.frc.team5669.autonomous.StartTankDriveStep;
 import org.usfirst.frc.team5669.autonomous.StopTankDriveStep;
 import org.usfirst.frc.team5669.hardware.AnalogDistanceSensor;
 import org.usfirst.frc.team5669.hardware.HardwareModule;
+import org.usfirst.frc.team5669.hardware.PneumaticActuator;
+import org.usfirst.frc.team5669.hardware.PneumaticCircuit;
 import org.usfirst.frc.team5669.hardware.TankDrive;
 
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
@@ -37,7 +39,9 @@ public class Robot extends IterativeRobot {
 	private AnalogDistanceSensor frontDist = new AnalogDistanceSensor(0), rightDist = new AnalogDistanceSensor(1), 
 			backDist = new AnalogDistanceSensor(2), leftDist = new AnalogDistanceSensor(3);
 	private FMS2018 fms = new FMS2018();
-	private HardwareModule[] modules = { drive, fms, frontDist, rightDist, backDist, leftDist };
+	private PneumaticCircuit pneumatics = new PneumaticCircuit(0);
+	private PneumaticActuator clawActuator = pneumatics.add(0, 2);
+	private HardwareModule[] modules = { drive, fms, frontDist, rightDist, backDist, leftDist, pneumatics };
 	private AutonomousQueue queue = new AutonomousQueue();
 	private Joystick stick = new Joystick(0);
 	
@@ -98,7 +102,7 @@ public class Robot extends IterativeRobot {
 	 * This function is called periodically during teleoperated mode.
 	 */
 	@Override
-	public void teleopPeriodic() {
+	public void teleopPeriodic() {		
 		// Y axis is upside-down, -1.0 is up and 1.0 is down.
 		drive.set(-stick.getY(), stick.getX());
 		
