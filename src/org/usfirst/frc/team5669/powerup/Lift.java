@@ -1,5 +1,7 @@
 package org.usfirst.frc.team5669.powerup;
 
+import org.usfirst.frc.team5669.hardware.HardwareModule;
+
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
@@ -10,6 +12,10 @@ public class Lift implements HardwareModule {
 			K = COUNTS_PER_REV * GEAR_RATIO * INCHES_PER_REV; // Conversion constant.
 	private TalonSRX liftMotor;
 	private int target = 0;
+	
+	public Lift(TalonSRX liftMotor) {
+		this.liftMotor = liftMotor;
+	}
 	
 	/**
 	 * Converts sensor counts into how high the lift is in inches.
@@ -35,6 +41,14 @@ public class Lift implements HardwareModule {
 	 */
 	public void moveTo(double inches) {
 		target = inchesToCounts(inches);
+	}
+	
+	public void spit() {
+		// TODO: Method stub!
+	}
+	
+	public void suck() {
+		// TODO: Method stub!
 	}
 	
 	/**

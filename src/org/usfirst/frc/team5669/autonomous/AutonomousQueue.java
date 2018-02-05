@@ -1,4 +1,4 @@
-package org.usfirst.frc.team5669.powerup.autonomous;
+package org.usfirst.frc.team5669.autonomous;
 
 import java.util.ArrayList;
 

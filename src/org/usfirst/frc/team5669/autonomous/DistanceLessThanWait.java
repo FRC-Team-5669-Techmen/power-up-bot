@@ -1,6 +1,6 @@
-package org.usfirst.frc.team5669.powerup.autonomous;
+package org.usfirst.frc.team5669.autonomous;
 
-import org.usfirst.frc.team5669.powerup.DistanceSensor;
+import org.usfirst.frc.team5669.hardware.DistanceSensor;
 
 public class DistanceLessThanWait extends AutonomousStep {
 	private DistanceSensor sensor;

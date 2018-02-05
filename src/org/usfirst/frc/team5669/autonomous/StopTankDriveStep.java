@@ -1,6 +1,6 @@
-package org.usfirst.frc.team5669.powerup.autonomous;
+package org.usfirst.frc.team5669.autonomous;
 
-import org.usfirst.frc.team5669.powerup.TankDrive;
+import org.usfirst.frc.team5669.hardware.TankDrive;
 
 public class StopTankDriveStep extends AutonomousStep {
 	private TankDrive tankDrive;

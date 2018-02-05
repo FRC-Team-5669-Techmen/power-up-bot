@@ -1,4 +1,4 @@
-package org.usfirst.frc.team5669.powerup;
+package org.usfirst.frc.team5669.hardware;
 
 public interface DistanceSensor {
 	/**
