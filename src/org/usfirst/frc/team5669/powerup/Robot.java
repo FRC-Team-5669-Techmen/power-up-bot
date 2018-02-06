@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -32,17 +33,10 @@ import edu.wpi.first.wpilibj.Joystick;
  * directory.
  */
 public class Robot extends IterativeRobot {
-	// WPI_TalonSRX is compatible with other WPILib motor controllers. TalonSRX has more functions but is less compatible.
-	private WPI_TalonSRX l1 = new WPI_TalonSRX(1), l2 = new WPI_TalonSRX(2), r3 = new WPI_TalonSRX(3), r4 = new WPI_TalonSRX(4);
-	private TankDrive drive = new TankDrive(l1, l2, r3, r4);
-	private Lift lift = new Lift(new TalonSRX(20));
-	private AnalogDistanceSensor frontDist = new AnalogDistanceSensor(0), rightDist = new AnalogDistanceSensor(1), 
-			backDist = new AnalogDistanceSensor(2), leftDist = new AnalogDistanceSensor(3);
 	private FMS2018 fms = new FMS2018();
-	private HardwareModule[] modules = { drive, fms, frontDist, rightDist, backDist, leftDist };
+	private HardwareModule[] modules = { fms };
 	private AutonomousQueue queue = new AutonomousQueue();
 	private Joystick stick = new Joystick(0);
-	private DoubleSolenoid solenoid = new DoubleSolenoid(0, 1);
 	
 	/**
 	 * This function is run when the robot is first started up and should be
@@ -64,19 +58,6 @@ public class Robot extends IterativeRobot {
 		System.out.println("Autonomous init called!");
 		System.out.println("The nearest switch has our team on the " + fms.getNearPlate() + " side.");
 		System.out.println("The central switch has our team on the " + fms.getMidPlate() + " side.");
-		
-		queue.clear();
-		// Insert code to build the autonomous queue here.
-		// For dropping a cube when starting on the right side.
-		AutonomousStep[] steps = {
-				new StartTankDriveStep(drive, 0.4, 0.0), // Go forward
-				new DistanceLessThanWait(frontDist, 24.0), // Until in front of the switch
-				new StopTankDriveStep(drive),
-				new SpitStep(lift)
-		};
-		for(AutonomousStep step : steps) {
-			queue.add(step);
-		}
 	}
 
 	/**
@@ -102,23 +83,6 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void teleopPeriodic() {
-		if(stick.getTrigger()) {
-			(new Compressor(0)).start();
-		} else {
-			(new Compressor(0)).stop();
-		}
-		
-		if(stick.getRawButton(5)) {
-			solenoid.set(DoubleSolenoid.Value.kReverse);
-		} else if(stick.getRawButton(3)) {
-			solenoid.set(DoubleSolenoid.Value.kForward);
-		} else {
-			solenoid.set(DoubleSolenoid.Value.kOff);
-		}
-		
-		// Y axis is upside-down, -1.0 is up and 1.0 is down.
-		drive.set(-stick.getY(), stick.getX());
-		
 		for(HardwareModule module : modules) {
 			module.periodic();
 		}
@@ -129,6 +93,8 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void testPeriodic() {
+		SmartDashboard.putNumber("TestNumber", 132904);
+		
 		for(HardwareModule module : modules) {
 			module.periodic();
 		}
