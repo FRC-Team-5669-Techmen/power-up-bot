@@ -39,9 +39,10 @@ public class Robot extends IterativeRobot {
 	private AnalogDistanceSensor frontDist = new AnalogDistanceSensor(0), rightDist = new AnalogDistanceSensor(1), 
 			backDist = new AnalogDistanceSensor(2), leftDist = new AnalogDistanceSensor(3);
 	private FMS2018 fms = new FMS2018();
+	private AutonomousInstructor2018 autoInst = new AutonomousInstructor2018();
 	private PneumaticCircuit pneumatics = new PneumaticCircuit(0);
 	private PneumaticActuator clawActuator = pneumatics.add(0, 2);
-	private HardwareModule[] modules = { drive, fms, frontDist, rightDist, backDist, leftDist, pneumatics };
+	private HardwareModule[] modules = { drive, fms, autoInst, frontDist, rightDist, backDist, leftDist, pneumatics };
 	private AutonomousQueue queue = new AutonomousQueue();
 	private Joystick stick = new Joystick(0);
 	
