@@ -23,6 +23,8 @@ import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.Preferences;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
@@ -94,6 +96,13 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void testPeriodic() {
 		SmartDashboard.putNumber("TestNumber", 132904);
+		String[] contents = {"a", "b", "c"};
+		SmartDashboard.putStringArray("TestCombo", contents);
+		SendableChooser<Integer> chooser = new SendableChooser<>();
+		chooser.addDefault("None", 0);
+		chooser.addObject("Some", 1);
+		chooser.addObject("All", 2);
+		SmartDashboard.putData("HI", chooser);
 		
 		for(HardwareModule module : modules) {
 			module.periodic();
