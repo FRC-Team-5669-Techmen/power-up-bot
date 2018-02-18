@@ -5,6 +5,8 @@ import org.usfirst.frc.team5669.hardware.HardwareModule;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
+import edu.wpi.first.wpilibj.SpeedController;
+
 public class Lift implements HardwareModule {
 	public static final double COUNTS_PER_REV = 4096.0, // How many counts the sensor returns per revolution. 
 			GEAR_RATIO = 1.0, // The gear ratio between the sensor and the final axle.
@@ -43,12 +45,8 @@ public class Lift implements HardwareModule {
 		target = inchesToCounts(inches);
 	}
 	
-	public void spit() {
-		// TODO: Method stub!
-	}
-	
-	public void suck() {
-		// TODO: Method stub!
+	public void setLiftSpeed(double speed) {
+		liftMotor.set(ControlMode.PercentOutput, speed);
 	}
 	
 	/**
@@ -62,7 +60,7 @@ public class Lift implements HardwareModule {
 	public void setup() { }
 	
 	public void periodic() {
-		liftMotor.set(ControlMode.Position, target);
+		//liftMotor.set(ControlMode.Position, target);
 	}
 	
 	public void stop() {

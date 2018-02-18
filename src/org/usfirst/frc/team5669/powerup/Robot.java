@@ -28,6 +28,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.Victor;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -38,16 +39,16 @@ import edu.wpi.first.wpilibj.Joystick;
  */
 public class Robot extends IterativeRobot {
 	// WPI_TalonSRX is compatible with other WPILib motor controllers. TalonSRX has more functions but is less compatible.
-	private WPI_Talon SRX l1 = new WPI_TalonSRX(1), l2 = new WPI_TalonSRX(2), r3 = new WPI_TalonSRX(3), r4 = new WPI_TalonSRX(4);
-	private TankDrive drive = new TankDrive(l1, l2, r3, r4);
+	private WPI_TalonSRX l1 = new WPI_TalonSRX(3), l2 = new WPI_TalonSRX(4), r1 = new WPI_TalonSRX(1), r2 = new WPI_TalonSRX(2);
+	private TankDrive drive = new TankDrive(l1, l2, r1, r2);
 	private Lift lift = new Lift(new TalonSRX(20));
-	private AnalogDistanceSensor frontDist = new AnalogDistanceSensor(0), rightDist = new AnalogDistanceSensor(1), 
-			backDist = new AnalogDistanceSensor(2), leftDist = new AnalogDistanceSensor(3);
+	private PneumaticClaw claw = new PneumaticClaw(0, 0, 2);
+	private AnalogDistanceSensor frontDist = new AnalogDistanceSensor(0, "front"), 
+			rightDist = new AnalogDistanceSensor(1, "right"), backDist = new AnalogDistanceSensor(2, "back"), 
+			leftDist = new AnalogDistanceSensor(3, "left");
 	private FMS2018 fms = new FMS2018();
 	private AutonomousInstructor2018 autoInst = new AutonomousInstructor2018();
-	private PneumaticCircuit pneumatics = new PneumaticCircuit(0);
-	private PneumaticActuator clawActuator = pneumatics.add(0, 2);
-	private HardwareModule[] modules = { drive, fms, autoInst, frontDist, rightDist, backDist, leftDist, pneumatics };
+	private HardwareModule[] modules = { drive, fms, autoInst, frontDist, rightDist, backDist, leftDist, claw };
 	private AutonomousQueue queue = new AutonomousQueue();
 	private Joystick stick = new Joystick(0);
 	
@@ -137,7 +138,21 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void teleopPeriodic() {		
 		// Y axis is upside-down, -1.0 is up and 1.0 is down.
-		drive.set(-stick.getY(), stick.getX());
+		drive.set(stick.getY() * (stick.getThrottle() - 1) , stick.getTwist() / 4);
+		
+		if(stick.getRawButton(5)) {
+			claw.expandClaw();
+		} else if(stick.getRawButton(3)) {
+			claw.contractClaw();
+		}
+		
+		if(stick.getRawButton(6)) {
+			lift.setLiftSpeed(0.5);
+		} else if(stick.getRawButton(4)) {
+			lift.setLiftSpeed(-0.5);
+		} else {
+			lift.setLiftSpeed(0.0);
+		}
 		
 		for(HardwareModule module : modules) {
 			module.periodic();
