@@ -57,6 +57,8 @@ public class PneumaticCircuit implements HardwareModule {
 
 	@Override
 	public void setup() {
+		compressor.setClosedLoopControl(true);
+		compressor.start();
 		for(PneumaticActuator actuator : actuators) {
 			actuator.setup();
 		}
@@ -64,7 +66,10 @@ public class PneumaticCircuit implements HardwareModule {
 
 	@Override
 	public void periodic() {
-		// TODO Auto-generated method stub
+		compressor.start();
+		for(PneumaticActuator actuator : actuators) {
+			actuator.periodic();
+		}
 
 	}
 

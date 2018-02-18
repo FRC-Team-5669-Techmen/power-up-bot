@@ -42,4 +42,12 @@ public class AutonomousInstructor2018 implements HardwareModule {
 	public void stop() {
 		
 	}
+	
+	public StartSide getStartSide() {
+		return startSideChooser.getSelected();
+	}
+	
+	public Target getPriorityTarget(int priorityLevel) {
+		return priorityChoosers.get(priorityLevel).getSelected();
+	}
 }
