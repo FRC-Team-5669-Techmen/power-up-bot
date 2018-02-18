@@ -3,6 +3,7 @@ package org.usfirst.frc.team5669.powerup;
 import org.usfirst.frc.team5669.hardware.HardwareModule;
 
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class FMS2018 implements HardwareModule {
 	public enum Side {
@@ -50,6 +51,12 @@ public class FMS2018 implements HardwareModule {
 	}
 	
 	public void periodic() {
+		SmartDashboard.putBoolean("FMS2018.nearLeft", nearPlate == Side.LEFT);
+		SmartDashboard.putBoolean("FMS2018.nearRight", nearPlate == Side.RIGHT);
+		SmartDashboard.putBoolean("FMS2018.midLeft", midPlate == Side.LEFT);
+		SmartDashboard.putBoolean("FMS2018.midRight", midPlate == Side.RIGHT);
+		SmartDashboard.putBoolean("FMS2018.farLeft", farPlate == Side.LEFT);
+		SmartDashboard.putBoolean("FMS2018.farRight", farPlate == Side.RIGHT);
 	}
 	
 	public void stop() {
