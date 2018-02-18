@@ -7,9 +7,14 @@
 
 package org.usfirst.frc.team5669.powerup;
 
+import java.util.ArrayList;
+
+import org.usfirst.frc.team5669.autonomous.AutonomousMode;
 import org.usfirst.frc.team5669.autonomous.AutonomousQueue;
 import org.usfirst.frc.team5669.autonomous.AutonomousStep;
 import org.usfirst.frc.team5669.autonomous.DistanceLessThanWait;
+import org.usfirst.frc.team5669.autonomous.PriorityObjective;
+import org.usfirst.frc.team5669.autonomous.StartPos;
 import org.usfirst.frc.team5669.autonomous.StartTankDriveStep;
 import org.usfirst.frc.team5669.autonomous.StopTankDriveStep;
 import org.usfirst.frc.team5669.hardware.AnalogDistanceSensor;
@@ -47,6 +52,10 @@ public class Robot extends IterativeRobot {
 	private AutonomousQueue queue = new AutonomousQueue();
 	private Joystick stick = new Joystick(0);
 	
+	private PriorityObjective objective;
+	private StartPos start;
+	private AutonomousMode autoMode= new AutonomousMode();
+	
 	/**
 	 * This function is run when the robot is first started up and should be
 	 * used for any initialization code.
@@ -68,15 +77,38 @@ public class Robot extends IterativeRobot {
 		System.out.println("The nearest switch has our team on the " + fms.getNearPlate() + " side.");
 		System.out.println("The central switch has our team on the " + fms.getMidPlate() + " side.");
 		
+		start = StartPos.LEFT; // I don't know how to initialize this variable depending on where we start.
+		
+		objective = new PriorityObjective(start, fms.getNearPlate(), fms.getMidPlate());
+		
 		queue.clear();
+		
+		
+		autoMode.addHardware(drive, lift);
+		autoMode.addSensors(frontDist, backDist, leftDist, rightDist);
+		autoMode.addFMS(fms);
+		autoMode.addStart(start);
+		
+		ArrayList<AutonomousStep> steps;
+		
+		// Something must be programmed to drop the claw (Forward and stop quickly)
+		
+		// Figure out which objective is most efficient
+		switch(objective.getPriority()) 
+		{
+		case SCALE:
+			steps = autoMode.getScaleSteps();
+			break;
+		case SWITCH:
+			steps = autoMode.getSwitchSteps();
+			break;
+		default:
+			// IDK Yet...
+			break;
+		}
+		
 		// Insert code to build the autonomous queue here.
 		// For dropping a cube when starting on the right side.
-		AutonomousStep[] steps = {
-				new StartTankDriveStep(drive, 0.4, 0.0), // Go forward
-				new DistanceLessThanWait(frontDist, 24.0), // Until in front of the switch
-				new StopTankDriveStep(drive),
-				//new SpitStep(lift)
-		};
 		for(AutonomousStep step : steps) {
 			queue.add(step);
 		}
