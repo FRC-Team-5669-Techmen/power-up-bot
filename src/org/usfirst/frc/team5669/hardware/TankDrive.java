@@ -7,14 +7,14 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class TankDrive implements HardwareModule {
 	private SpeedController l1, l2, r1, r2;
 	private double left, right, speed, turn;
-	
+
 	public TankDrive(SpeedController l1, SpeedController l2, SpeedController r1, SpeedController r2) {
 		this.l1 = l1;
 		this.l2 = l2;
 		this.r1 = r1;
 		this.r2 = r2;
 	}
-	
+
 	public void set(double speed, double turn) {
 		this.speed = speed;
 		this.turn = turn;
@@ -23,9 +23,10 @@ public class TankDrive implements HardwareModule {
 		left += turn;
 		right -= turn;
 	}
-	
-	public void setup() { }
-	
+
+	public void setup() {
+	}
+
 	public void periodic() {
 		l1.set(left);
 		l2.set(left);
@@ -39,7 +40,7 @@ public class TankDrive implements HardwareModule {
 		SmartDashboard.putBoolean("TankDrive.forward", speed > 0.03);
 		SmartDashboard.putBoolean("TankDrive.turning", Math.abs(turn) > 0.05);
 	}
-	
+
 	public void stop() {
 		left = 0;
 		right = 0;

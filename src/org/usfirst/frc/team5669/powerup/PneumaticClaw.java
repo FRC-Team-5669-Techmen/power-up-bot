@@ -7,16 +7,16 @@ import org.usfirst.frc.team5669.hardware.PneumaticCircuit;
 public class PneumaticClaw implements HardwareModule {
 	private PneumaticCircuit pneumatics;
 	private PneumaticActuator clawActuator;
-	
+
 	public PneumaticClaw(int pcmId, int expandId, int contractId) {
 		pneumatics = new PneumaticCircuit(pcmId);
 		clawActuator = pneumatics.add(expandId, contractId);
 	}
-	
+
 	public void expandClaw() {
 		clawActuator.set(-1.0);
 	}
-	
+
 	public void contractClaw() {
 		clawActuator.set(1.0);
 	}
