@@ -83,24 +83,38 @@ public class AutonomousMode {
 	}
 
 	private List<AutonomousStep> straightSwitchSteps() {
-		return Arrays.asList(new SetLiftHeightStep(lift, -3.3e7), new StartTankDriveStep(drive, 0.45, 0.0),
-				new DistanceGreaterThanWait(backDist, 60.0), new StopTankDriveStep(drive),
-				new ReadDistanceTurnStep(drive, rightDist, frontDist, 0.1, 0.25),
-
-				new SpitStep(claw));
+		return Arrays.asList(//new SetLiftHeightStep(lift, -3.3e7), 
+							new StartTankDriveStep(drive, 0.45, 0.0), // Go Straight
+							new DistanceGreaterThanWait(backDist, 60.0), 
+							new StopTankDriveStep(drive));
+							//new SpitStep(claw)); // Drop Box into Switch
 	};
+	
+	private List<AutonomousStep> leftToRightSwitchSteps() {
+		return Arrays.asList(new StartTankDriveStep(drive, 0.3, 0.0),
+							 new DistanceGreaterThanWait(backDist, 30.0),
+							 new StopTankDriveStep(drive),
+							 new TurnTankDriveStep(drive, 0.2, 110.0),
+							 new StartTankDriveStep(drive, 0.3, 0.0),
+							 new DistanceLessThanWait(frontDist, 60.0),
+							 new StopTankDriveStep(drive)
+							 //new SpitStep(claw)
+							 );
+	}
 
 	private List<AutonomousStep> straightScaleSteps() {
-		return Arrays.asList(new SetLiftHeightStep(lift, 24.0), new StartTankDriveStep(drive, 0.2, 0.0),
-				new DistanceLessThanWait(frontDist, 24.0), new DistanceGreaterThanWait(backDist, 80.0),
-				new StopTankDriveStep(drive)
-		// new StartTankDriveStep(drive, 0.2, 1)
-		);
+		return Arrays.asList(new SetLiftHeightStep(lift, -3.3e7), 
+							new StartTankDriveStep(drive, 0.2, 0.0), // Go Straight
+							new DistanceLessThanWait(frontDist, 24.0), 
+							new DistanceGreaterThanWait(backDist, 80.0),
+							new StopTankDriveStep(drive)
+							
+							);
 	}
 
 	public List<AutonomousStep> getSwitchSteps() {
 		if (startSide == switchSide) {
-			return straightSwitchSteps();
+			return leftToRightSwitchSteps();
 		} else {
 			// Go to the other side of the switch
 			return new ArrayList<AutonomousStep>();

@@ -30,6 +30,8 @@ public class AutonomousQueue {
 				queue.remove(0);
 				if (queue.size() > 0) {
 					queue.get(0).start();
+				} else {
+					return;
 				}
 			} else {
 				return;

@@ -19,6 +19,7 @@ public class RS232DistanceSensor implements HardwareModule, DistanceSensor {
 	@Override
 	public void periodic() {
 		String next = serial.readString();
+		System.out.print(next);
 		// Content of message is R[1-4 digit number][carriage return]
 		if((next.length() >= 3) && (next.length() <= 6) && (next.charAt(0) == 'R')) {
 			String number = next.substring(1, next.length() - 1);

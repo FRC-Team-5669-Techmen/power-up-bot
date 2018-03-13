@@ -40,18 +40,19 @@ import edu.wpi.first.wpilibj.Victor;
 public class Robot extends IterativeRobot {
 	// WPI_TalonSRX is compatible with other WPILib motor controllers. TalonSRX has
 	// more functions but is less compatible.
-	private WPI_TalonSRX l1 = new WPI_TalonSRX(3), l2 = new WPI_TalonSRX(4), r1 = new WPI_TalonSRX(1),
-			r2 = new WPI_TalonSRX(2);
-	private TankDrive drive = new TankDrive(l1, l2, r1, r2);
-	private Lift lift = new Lift(new TalonSRX(20));
-	private PneumaticClaw claw = new PneumaticClaw(0, 0, 2);
+	private Victor l1 = new Victor(3), l2 = new Victor(4), r1 = new Victor(1),
+			r2 = new Victor(2);
+	private TalonSRX tankEncoder = new TalonSRX(21);
+	private TankDrive drive = new TankDrive(l1, l2, r1, r2, tankEncoder);
+	//private Lift lift = new Lift(new TalonSRX(20));
+	//private PneumaticClaw claw = new PneumaticClaw(0, 0, 2);
 	// TODO: Replace back distance sensor with RS232 implementation
 	private DistanceSensor frontDist = new AnalogDistanceSensor(3, "front"),
-			rightDist = new AnalogDistanceSensor(2, "right"), backDist = new RS232DistanceSensor(),
+			rightDist = new AnalogDistanceSensor(2, "right"), backDist = new AnalogDistanceSensor(1, "back"),
 			leftDist = new AnalogDistanceSensor(0, "left");
 	private FMS2018 fms = new FMS2018();
 	private AutonomousInstructor2018 autoInst = new AutonomousInstructor2018();
-	private HardwareModule[] modules = { drive, fms, autoInst, frontDist, rightDist, backDist, leftDist, claw, lift };
+	private HardwareModule[] modules = { drive, fms, autoInst, frontDist, rightDist, backDist, leftDist};//, claw, lift };
 	
 	private AutonomousQueue queue = new AutonomousQueue();
 	private Joystick stick = new Joystick(0);
@@ -87,7 +88,7 @@ public class Robot extends IterativeRobot {
 		objective = new PriorityObjective(autoInst.getStartSide(), fms.getNearPlate(), fms.getMidPlate());
 
 
-		autoMode.addHardware(drive, lift, claw);
+		autoMode.addHardware(drive, null, null);//lift, claw);
 		autoMode.addSensors(frontDist, backDist, leftDist, rightDist);
 		autoMode.addFMS(fms);
 		autoMode.addStart(start);
@@ -179,7 +180,7 @@ public class Robot extends IterativeRobot {
 			invNum = 1;
 		}
 		drive.set(invNum * stick.getY() * (stick.getThrottle() - 1) / 2, stick.getTwist() / 4);
-		
+		/*
 		System.out.println("LIFT POSITION: " + lift.getCurrentPos());
 		// I changed the claw controls to trigger and 2
 		if (stick.getRawButton(2)) {
@@ -198,7 +199,7 @@ public class Robot extends IterativeRobot {
 		} else if(liftWasMoving) {
 			lift.holdCurrentPosition();
 			liftWasMoving = false;
-		}
+		}*/
 		
 		
 		for (HardwareModule module : modules) {
