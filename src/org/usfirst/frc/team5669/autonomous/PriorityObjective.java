@@ -5,7 +5,7 @@ import org.usfirst.frc.team5669.powerup.FMS2018.Side;
 public class PriorityObjective {
 
 	private Priority priority;
-	private Side switchSide, midSide, startSide; // 1 for Left, 2 for Right
+	private Side switchSide, scaleSide, startSide; // 1 for Left, 2 for Right
 	private int modifier; // 0 for nothing, 1 always prioritize switch, 2 for always prioritize middle
 
 	public PriorityObjective(Side start, Side swtch, Side mid) {
@@ -26,7 +26,7 @@ public class PriorityObjective {
 
 	private void initSides(Side start, Side swtch, Side mid) {
 		switchSide = swtch;
-		midSide = mid;
+		scaleSide = mid;
 		startSide = start;
 	}
 
@@ -36,10 +36,10 @@ public class PriorityObjective {
 		} else if (modifier == 2) {
 			priority = Priority.SCALE;
 		} else {
-			if (switchSide == startSide) {
-				priority = Priority.SWITCH;
-			} else if (midSide == startSide) {
+			if (scaleSide == startSide) {
 				priority = Priority.SCALE;
+			} else if (switchSide == startSide) {
+				priority = Priority.SWITCH;
 			} else {
 				priority = Priority.SWITCH;
 			}

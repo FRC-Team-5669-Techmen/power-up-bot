@@ -12,6 +12,7 @@ public class DistanceLessThanWait extends AutonomousStep {
 	}
 
 	public boolean isDone() {
+		System.out.println(sensor.getDistance());
 		return this.sensor.getDistance() < threshold;
 	}
 }

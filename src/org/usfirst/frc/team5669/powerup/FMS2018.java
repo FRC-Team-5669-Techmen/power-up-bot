@@ -63,17 +63,14 @@ public class FMS2018 implements HardwareModule {
 	}
 
 	public Side getNearPlate() {
-		// TODO: This is just for testing in the back of IDEA
-		return Side.LEFT; //return nearPlate;
+		return nearPlate; //return nearPlate;
 	}
 
 	public Side getMidPlate() {
-		// TODO: This is just for testing in the back of IDEA
-		return Side.LEFT; //return midPlate;
+		return midPlate; //return midPlate;
 	}
 
 	public Side getFarPlate() {
-		// TODO: This is just for testing in the back of IDEA
-		return Side.LEFT; //return farPlate;
+		return farPlate; //return farPlate;
 	}
 }
