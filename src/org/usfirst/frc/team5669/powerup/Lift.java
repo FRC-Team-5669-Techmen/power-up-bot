@@ -85,7 +85,7 @@ public class Lift implements HardwareModule {
 		liftMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute, 0, 0);
 	}
 
-	public void periodic() {
+	public void periodic(double dt) {
 		SmartDashboard.putNumber("Lift Position (Counts)", liftMotor.getSelectedSensorPosition(0));
 		SmartDashboard.putNumber("Lift Position (Inches)", getCurrentPos());
 		SmartDashboard.putNumber("Lift Target (Counts)", target);

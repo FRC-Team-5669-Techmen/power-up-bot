@@ -66,10 +66,10 @@ public class PneumaticCircuit implements HardwareModule {
 	}
 
 	@Override
-	public void periodic() {
+	public void periodic(double dt) {
 		compressor.start();
 		for (PneumaticActuator actuator : actuators) {
-			actuator.periodic();
+			actuator.periodic(dt);
 		}
 
 	}

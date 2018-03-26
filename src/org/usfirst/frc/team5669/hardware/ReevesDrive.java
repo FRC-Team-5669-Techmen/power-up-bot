@@ -35,7 +35,7 @@ public class ReevesDrive implements HardwareModule {
 	}
 
 	@Override
-	public void periodic() {
+	public void periodic(double dt) {
 		// Only move forwards or backwards if the potentiometer is not at its limit yet.
 		
 		if(((speed > 0) && (potentiometer.getVoltage() < MAX_VOLTAGE))

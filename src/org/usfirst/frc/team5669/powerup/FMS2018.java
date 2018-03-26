@@ -50,7 +50,7 @@ public class FMS2018 implements HardwareModule {
 		startGetterThread();
 	}
 
-	public void periodic() {
+	public void periodic(double dt) {
 		SmartDashboard.putBoolean("FMS2018.nearLeft", nearPlate == Side.LEFT);
 		SmartDashboard.putBoolean("FMS2018.nearRight", nearPlate == Side.RIGHT);
 		SmartDashboard.putBoolean("FMS2018.midLeft", midPlate == Side.LEFT);

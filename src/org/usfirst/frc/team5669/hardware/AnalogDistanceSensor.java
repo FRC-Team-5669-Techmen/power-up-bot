@@ -22,7 +22,7 @@ public class AnalogDistanceSensor implements HardwareModule, DistanceSensor {
 	}
 
 	@Override
-	public void periodic() {
+	public void periodic(double dt) {
 		SmartDashboard.putNumber("AnalogDistanceSensor." + name + ".inches", getDistance());
 	}
 

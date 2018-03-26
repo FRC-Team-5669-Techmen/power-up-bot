@@ -27,8 +27,8 @@ public class PneumaticClaw implements HardwareModule {
 	}
 
 	@Override
-	public void periodic() {
-		pneumatics.periodic();
+	public void periodic(double dt) {
+		pneumatics.periodic(dt);
 	}
 
 	@Override

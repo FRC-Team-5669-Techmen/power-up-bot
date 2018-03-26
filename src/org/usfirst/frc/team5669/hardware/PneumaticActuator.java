@@ -41,7 +41,7 @@ public class PneumaticActuator implements HardwareModule {
 	}
 
 	@Override
-	public void periodic() {
+	public void periodic(double dt) {
 	}
 
 	@Override

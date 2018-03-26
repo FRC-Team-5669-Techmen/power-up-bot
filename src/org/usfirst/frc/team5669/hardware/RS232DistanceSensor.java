@@ -17,7 +17,7 @@ public class RS232DistanceSensor implements HardwareModule, DistanceSensor {
 	}
 
 	@Override
-	public void periodic() {
+	public void periodic(double dt) {
 		String next = serial.readString();
 		System.out.print(next);
 		// Content of message is R[1-4 digit number][carriage return]

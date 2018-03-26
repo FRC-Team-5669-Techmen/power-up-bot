@@ -16,8 +16,9 @@ public interface HardwareModule {
 	 * Called periodically whenever the robot is functional. This should do things
 	 * like set motor speeds to fulfill whatever this module has been requested to
 	 * do.
+	 * @param dt TODO
 	 */
-	void periodic();
+	void periodic(double dt);
 
 	/**
 	 * This is called when the module should stop doing whatever it is doing. For

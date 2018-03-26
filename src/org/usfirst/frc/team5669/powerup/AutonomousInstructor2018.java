@@ -33,7 +33,7 @@ public class AutonomousInstructor2018 implements HardwareModule {
 	}
 
 	@Override
-	public void periodic() {
+	public void periodic(double dt) {
 
 	}
 
