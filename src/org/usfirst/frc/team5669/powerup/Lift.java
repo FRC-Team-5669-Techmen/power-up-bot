@@ -22,6 +22,7 @@ public class Lift implements HardwareModule {
 	private Mode mode = Mode.SPEED;
 	private int target = 0;
 	private double speed = 0.0;
+	private int offset = 0;
 
 	public Lift(TalonSRX liftMotor) {
 		this.liftMotor = liftMotor;
@@ -56,8 +57,12 @@ public class Lift implements HardwareModule {
 	 *            The desired height of the lift in inches.
 	 */
 	public void moveTo(double inches) {
-		target = inchesToCounts(inches);
+		target = inchesToCounts(inches) + offset;
 		mode = Mode.POSITION;
+	}
+	
+	public boolean isMovingToTarget() {
+		return mode == Mode.POSITION;
 	}
 	
 	public void holdCurrentPosition() {
@@ -78,11 +83,19 @@ public class Lift implements HardwareModule {
 	 * @return the current height of the lift in inches.
 	 */
 	public double getCurrentPos() {
-		return countsToInches(liftMotor.getSelectedSensorPosition(0));
+		return countsToInches(liftMotor.getSelectedSensorPosition(0) - offset);
+	}
+	
+	public void resetEncoder() {
+		offset = liftMotor.getSelectedSensorPosition(0);
 	}
 
 	public void setup() {
 		liftMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute, 0, 0);
+	}
+	
+	public boolean forwardLimitPressed() {
+		return liftMotor.getSensorCollection().isFwdLimitSwitchClosed();
 	}
 
 	public void periodic(double dt) {
@@ -92,6 +105,9 @@ public class Lift implements HardwareModule {
 		SmartDashboard.putNumber("Lift Speed", speed);
 		SmartDashboard.putBoolean("Position Mode?", mode == Mode.POSITION);
 		SmartDashboard.putBoolean("Speed Mode?", mode == Mode.SPEED);
+		if(forwardLimitPressed()) {// || liftMotor.getSensorCollection().isRevLimitSwitchClosed()) {
+			//holdCurrentPosition(); // If we trip a limit switch, stop trying to move. Just hold the current position.
+		}
 		if(mode == Mode.POSITION) {
 			double speedDecayFactor = 4000.0; // If the encoder is [speedDecayFactor] counts off of the target, motor will go full speed. All other positions are linearly related to that speed.
 			double correctionSpeed = ((double) (target - liftMotor.getSelectedSensorPosition(0))) / speedDecayFactor;

@@ -17,9 +17,20 @@ public class TurnTankDriveStep extends AutonomousStep {
 		rightTarget = (int) (-degrees * COUNTS_PER_DEGREE);
 		clockwise = degrees > 0;
 	}
+	
+	/* Positive degrees = clockwise, negative degrees = counterclockwise. */
+	public TurnTankDriveStep(TankDrive tankDrive, double speed, double degrees, long timeLimit) {
+		this.tankDrive = tankDrive;
+		this.speed = speed;
+		leftTarget = (int) (degrees * COUNTS_PER_DEGREE);
+		rightTarget = (int) (-degrees * COUNTS_PER_DEGREE);
+		clockwise = degrees > 0;
+		this.maxDuration = timeLimit;
+	}
 
 	@Override
 	public void start() {
+		super.start();
 		tankDrive.resetEncoders();
 		if(clockwise) {
 			this.tankDrive.set(0.0, speed);
@@ -74,8 +85,9 @@ public class TurnTankDriveStep extends AutonomousStep {
 
 	@Override
 	public boolean isDone() {
-		return ((Math.abs(tankDrive.getLeftEncoder())) >= Math.abs(leftTarget)) &&
-				((Math.abs(tankDrive.getRightEncoder())) >= Math.abs(rightTarget));
+		return (((Math.abs(tankDrive.getLeftEncoder())) >= Math.abs(leftTarget)) &&
+				((Math.abs(tankDrive.getRightEncoder())) >= Math.abs(rightTarget)))
+				|| super.isDone();
 	}
 	
 	@Override

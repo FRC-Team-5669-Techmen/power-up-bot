@@ -28,7 +28,7 @@ public class TankDrive implements HardwareModule {
 		mechanicalCompensationActive = false;
 	}
 
-	public TankDrive(SpeedController l1, SpeedController l2, SpeedController r1, SpeedController r2, 
+	public TankDrive(SpeedController l1, SpeedController l2, SpeedController r1, SpeedController r2,
 			TalonSRX leftEncoder, TalonSRX rightEncoder) {
 		this.l1 = l1;
 		this.l2 = l2;
@@ -102,14 +102,14 @@ public class TankDrive implements HardwareModule {
 			if((Math.abs(leftInstSpeed) > 0.02) && (!Double.isNaN(leftInstSpeed) && (!Double.isInfinite(leftInstSpeed)))) {
 				leftBuffer[leftPointer] = leftInstSpeed;
 				leftPointer = (leftPointer + 1) % BUFFER_SIZE;
-				System.out.print("left adding ");
-				System.out.println(leftInstSpeed);
+				//System.out.print("left adding ");
+				//System.out.println(leftInstSpeed);
 			}
 			if((Math.abs(rightInstSpeed) > 0.02) && (!Double.isNaN(rightInstSpeed) && (!Double.isInfinite(rightInstSpeed)))) {
 				rightBuffer[rightPointer] = rightInstSpeed;
 				rightPointer = (rightPointer + 1) % BUFFER_SIZE;
-				System.out.print("right adding ");
-				System.out.println(rightInstSpeed);
+//				System.out.print("right adding ");
+//				System.out.println(rightInstSpeed);
 			}
 			// Moving averages, to be used to compute how far off of their target value they are.
 			double leftSpeedMA = 0.0, rightSpeedMA = 0.0;
@@ -122,10 +122,10 @@ public class TankDrive implements HardwareModule {
 			}
 			rightSpeedMA /= (double) BUFFER_SIZE;
 			leftError = leftSpeedMA / rightSpeedMA; // If left is consistently going faster, leftError > 1.
-			System.out.print("left errror ");
-			System.out.println(leftError);
-			System.out.println(leftSpeedMA);
-			System.out.println(rightSpeedMA);
+//			System.out.print("left errror ");
+//			System.out.println(leftError);
+//			System.out.println(leftSpeedMA);
+//			System.out.println(rightSpeedMA);
 			elapsedSamples++;
 		}
 		if(elapsedSamples <= BUFFER_SIZE) {
@@ -136,10 +136,6 @@ public class TankDrive implements HardwareModule {
 		l2.set(left / leftError);
 		r1.set(right);
 		r2.set(right);
-		
-		System.out.println("Encoders");
-		System.out.println(getLeftEncoder());
-		System.out.println(getRightEncoder());
 	}
 
 	public void stop() {

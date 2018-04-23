@@ -14,12 +14,14 @@ import org.usfirst.frc.team5669.powerup.SpitStep;
 
 public class AutonomousMode {
 	private static final double AUTO_SPEED = 0.4;
-	private static final double TURN_SPEED = 0.35;
+	private static final double TURN_SPEED = 0.4;
 	private static final long WAIT_TIME = 200;
 	private static final double NINETY_DEGREES = 90.0; // This seems really unnecessary, but I was trying to compensate for motor problems on the test bot. // WAS 60.0 Degrees
-	private static final double LIFT_MAX_HEIGHT = -1.35e8;
-	private static final double LIFT_MID_HEIGHT = -6.0e7;
-	private static final double LIFT_START_HEIGHT = -3.3e7;
+	public static final double LIFT_MAX_HEIGHT = -1.42e8;
+	public static final double LIFT_MID_HEIGHT = -10.0e7;
+	public static final double LIFT_WING_HEIGHT = -1.32e8; // TODO: MEASURE THIS VALUE!
+	public static final double LIFT_START_HEIGHT = -3.3e7 + 1.5e7;
+	public static final double LIFT_LOWEST_HEIGHT = -1.5e7 + 1.5e7; 
 	private TankDrive drive;
 	private Lift lift;
 	private PneumaticClaw claw;
@@ -54,7 +56,27 @@ public class AutonomousMode {
 	}
 	
 	// Helpers
-	
+	private List<AutonomousStep> centerSwitchSteps() {
+		int turnMod = 1;
+		if(switchSide == Side.RIGHT)
+		{
+			turnMod = 1;
+		}
+		else if(switchSide == Side.LEFT) {
+			turnMod = -1;
+		}
+		return Arrays.asList(//new SetLiftHeightStep(lift, LIFT_START_HEIGHT),
+				 			 new LiftWhileDrivingStep(lift, LIFT_MID_HEIGHT),
+				 			 new TankDriveDistanceStep(drive, AUTO_SPEED, 90.0),
+				 			 new WaitStep(WAIT_TIME),
+				 			 new TurnTankDriveStep(drive, TURN_SPEED, NINETY_DEGREES * turnMod, 4000),
+				 			 new WaitForLiftStep(lift, LIFT_MID_HEIGHT),
+				 			 new WaitStep(WAIT_TIME),
+				 			 new TankDriveDistanceStep(drive, AUTO_SPEED, 40.0),
+				 			 new TurnTankDriveStep(drive, TURN_SPEED, -NINETY_DEGREES * turnMod, 4000),
+				 			 new TankDriveDistanceStep(drive, AUTO_SPEED, 50.0),
+				 			 new SpitStep(claw));
+	}
 	private List<AutonomousStep> straightSwitchSteps() {
 		int turnMod = 1; // Changes the angle from positive to negative depending on the start.
 		if(startSide == Side.LEFT)
@@ -65,13 +87,14 @@ public class AutonomousMode {
 		{
 			turnMod = -1;
 		}
-		return Arrays.asList(new SetLiftHeightStep(lift, LIFT_START_HEIGHT), 
+		return Arrays.asList(//new SetLiftHeightStep(lift, LIFT_START_HEIGHT),
+				            new LiftWhileDrivingStep(lift, LIFT_MID_HEIGHT),
 							new TankDriveDistanceStep(drive, AUTO_SPEED, 146.0), // Used to be 155.0
 							new WaitStep(WAIT_TIME),
-							new TurnTankDriveStep(drive, TURN_SPEED, NINETY_DEGREES * turnMod),
+							new WaitForLiftStep(lift, LIFT_MID_HEIGHT),
+							new TurnTankDriveStep(drive, TURN_SPEED, NINETY_DEGREES * turnMod, 4000),
 							new WaitStep(WAIT_TIME),
-							new SetLiftHeightStep(lift, LIFT_MID_HEIGHT),
-							new TankDriveDistanceStep(drive, AUTO_SPEED, 35.0),
+							new TankDriveDistanceStep(drive, AUTO_SPEED, 35.0, 3000),
 							new SpitStep(claw)  // Drop Box into Switch
 							);
 	};
@@ -86,8 +109,8 @@ public class AutonomousMode {
 		{
 			turnMod = -1;
 		}
-		return Arrays.asList(new SetLiftHeightStep(lift, LIFT_START_HEIGHT),
-							 new TankDriveDistanceStep(drive, AUTO_SPEED, 211.0), // 146" for base, 40" for robot, 13" for cubes, 12" for buffer zone.
+		/*return Arrays.asList(new SetLiftHeightStep(lift, LIFT_START_HEIGHT),
+							 new TankDriveDistanceStep(drive, AUTO_SPEED, 235.0), // 146" for base, 40" for robot, 13" for cubes, 12" for buffer zone, 24" because it's not far enough.
 							 new WaitStep(WAIT_TIME),
 							 new TurnTankDriveStep(drive, TURN_SPEED, NINETY_DEGREES * turnMod),
 							 new WaitStep(WAIT_TIME),
@@ -95,14 +118,15 @@ public class AutonomousMode {
 							 new WaitStep(WAIT_TIME),
 							 new TurnTankDriveStep(drive, TURN_SPEED, NINETY_DEGREES * turnMod),
 							 new WaitStep(WAIT_TIME),
-							 new TankDriveDistanceStep(drive, AUTO_SPEED, 66.0), // 211" - 146" for base
+							 new TankDriveDistanceStep(drive, AUTO_SPEED, 89.0), // 235" - 146" for base
 							 new WaitStep(WAIT_TIME),
 							 new TurnTankDriveStep(drive, TURN_SPEED, NINETY_DEGREES * turnMod),
 							 new WaitStep(WAIT_TIME),
 							 new SetLiftHeightStep(lift, LIFT_MID_HEIGHT),
-							 new TankDriveDistanceStep(drive, AUTO_SPEED, 35.0), // A lot extra for comfort.
+							 new TankDriveDistanceStep(drive, AUTO_SPEED, 25.0), // A lot extra for comfort.
 							 new SpitStep(claw)
-							 );
+							 );*/
+		return Arrays.asList(new TankDriveDistanceStep(drive, AUTO_SPEED, 240.0));
 	}
 
 	public List<AutonomousStep> straightScaleSteps() {
@@ -115,13 +139,15 @@ public class AutonomousMode {
 		{
 			turnMod = -1;
 		}
-		return Arrays.asList(new SetLiftHeightStep(lift, LIFT_START_HEIGHT), 
-							 new TankDriveDistanceStep(drive, AUTO_SPEED, 283.0), // - 168.0 if starting from switch position
+		return Arrays.asList(//new SetLiftHeightStep(lift, LIFT_START_HEIGHT),
+				             new LiftWhileDrivingStep(lift, LIFT_MAX_HEIGHT),
+							 new TankDriveDistanceStep(drive, AUTO_SPEED, 310.0), // - 168.0 if starting from switch position
+							 new WaitForLiftStep(lift, LIFT_MAX_HEIGHT),
 							 new WaitStep(WAIT_TIME),
-							 new SetLiftHeightStep(lift, LIFT_MAX_HEIGHT),
-							 new TurnTankDriveStep(drive, TURN_SPEED, NINETY_DEGREES * turnMod),// * turnMod)
+							 //new SetLiftHeightStep(lift, LIFT_MAX_HEIGHT),
+							 new TurnTankDriveStep(drive, TURN_SPEED, NINETY_DEGREES * turnMod, 4000),// * turnMod)
 							 new WaitStep(WAIT_TIME),
-							 new TankDriveDistanceStep(drive, AUTO_SPEED, 28.0),
+							 new TankDriveDistanceStep(drive, AUTO_SPEED, 28.0, 3000),
 							 new SpitStep(claw)
 							);
 	}
@@ -136,7 +162,8 @@ public class AutonomousMode {
 		{
 			turnMod = -1;
 		}
-		return Arrays.asList(new SetLiftHeightStep(lift, LIFT_START_HEIGHT),
+		return Arrays.asList(new TankDriveDistanceStep(drive, AUTO_SPEED, 200.0)); // This should never, NEVER be used. But just in case there is a bug...
+		/*return Arrays.asList(new SetLiftHeightStep(lift, LIFT_START_HEIGHT),
 							 new TankDriveDistanceStep(drive, AUTO_SPEED, 240.0),
 							 new WaitStep(WAIT_TIME),
 							 new TurnTankDriveStep(drive, TURN_SPEED, NINETY_DEGREES * turnMod),
@@ -153,7 +180,7 @@ public class AutonomousMode {
 							 new WaitStep(WAIT_TIME),
 							 new TankDriveDistanceStep(drive, AUTO_SPEED, 28.0),
 							 new SpitStep(claw)
-							 );
+							 );*/
 		/*
 		return Arrays.asList(new TankDriveDistanceStep(drive, AUTO_SPEED, 220.0),
 				new TurnTankDriveStep(drive, TURN_SPEED, NINETY_DEGREES * turnMod));
@@ -166,8 +193,12 @@ public class AutonomousMode {
 		System.out.println("Going to the " + fms.getNearPlate() + " switch");
 		if (startSide == switchSide) {
 			return straightSwitchSteps();
-		} else {
+		} else if (startSide == Side.MID) {
 			// Go to the other side of the switch
+			return centerSwitchSteps();
+		}
+		else
+		{
 			return farSideSwitchSteps();
 		}
 	}

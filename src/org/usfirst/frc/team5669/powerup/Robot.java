@@ -14,6 +14,7 @@ import java.util.List;
 import org.usfirst.frc.team5669.autonomous.AutonomousMode;
 import org.usfirst.frc.team5669.autonomous.AutonomousQueue;
 import org.usfirst.frc.team5669.autonomous.AutonomousStep;
+import org.usfirst.frc.team5669.autonomous.LiftWhileDrivingStep;
 import org.usfirst.frc.team5669.autonomous.PriorityObjective;
 import org.usfirst.frc.team5669.autonomous.SetLiftHeightStep;
 import org.usfirst.frc.team5669.autonomous.StartTankDriveStep;
@@ -32,6 +33,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj.AnalogInput;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Victor;
@@ -60,7 +62,7 @@ public class Robot extends IterativeRobot {
 	private HardwareModule[] modules = { drive, fms, autoInst, frontDist, rightDist, backDist, leftDist, claw, lift };
 
 	private AutonomousQueue queue = new AutonomousQueue();
-	private Joystick leftStick = new Joystick(0), rightStick = new Joystick(1);
+	private Joystick leftStick = new Joystick(0), rightStick = new Joystick(1), gamepad = new Joystick(2), throttle = new Joystick(3), stick = new Joystick(4);
 	private PriorityObjective objective;
 	private Side start;
 	private AutonomousMode autoMode = new AutonomousMode();
@@ -83,8 +85,8 @@ public class Robot extends IterativeRobot {
 		rightTankEncoder.configReverseSoftLimitEnable(false, 0);
 		rightTankEncoder.overrideLimitSwitchesEnable(false);
 		rightTankEncoder.overrideSoftLimitsEnable(false);
-		// r1.overrideSoftLimitsEnable(false);
-		// r1.enable
+		r1.overrideSoftLimitsEnable(false);
+		lift.resetEncoder();
 	}
 
 	/**
@@ -129,14 +131,18 @@ public class Robot extends IterativeRobot {
 		// steps = autoMode.straightScaleSteps();
 		queue.clear();
 		for (AutonomousStep step : steps) {
-			queue.add(step);
+			//queue.add(step);
 		}
 		// queue.add(new StartTankDriveStep(drive, 0.0, 0.3));
 		// queue.add(new WaitStep(8000));
 		// queue.add(new StopTankDriveStep(drive));
-		// queue.add(new TankDriveDistanceStep(drive, 0.3, 250.0));
+//		 queue.add(new TankDriveDistanceStep(drive, 0.3, 250.0));
 		// queue.add(new TurnTankDriveStep(drive, 0.3, 90.0));
-		// queue.add(new SetLiftHeightStep(lift, -1.35e8));
+		// queue.add(new SetLiftHeightStep(lift, AutonomousMode.LIFT_MID_HEIGHT));
+		// queue.add(new SpitStep(claw));
+		// queue.add(new LiftWhileDrivingStep(lift, AutonomousMode.LIFT_MAX_HEIGHT));
+		// queue.add(new TankDriveDistanceStep(drive, 0.3, 50.0));
+		// queue.add(new SetLiftHeightStep(lift, AutonomousMode.LIFT_MAX_HEIGHT));
 	}
 
 	long previousTime = System.currentTimeMillis();
@@ -168,6 +174,7 @@ public class Robot extends IterativeRobot {
 	double MAX_ACCELERATION = 2.0; // Accelerate to full speed in 1 / MAX_ACCELERATION seconds.
 	long prevTime = System.currentTimeMillis();
 
+	boolean triggerWasPressed = false;
 	/**
 	 * This function is called periodically during teleoperated mode.
 	 */
@@ -175,12 +182,17 @@ public class Robot extends IterativeRobot {
 	public void teleopPeriodic() {
 		double secondsSinceLastUpdate = ((double) System.currentTimeMillis() - prevTime) / 1000.0;
 		prevTime = System.currentTimeMillis();
-		System.out.println("The nearest switch has our team on the " + fms.getNearPlate() + " side.");
-		System.out.println("The central scale has our team on the " + fms.getMidPlate() + " side.");
+		//System.out.println("The nearest switch has our team on the " + fms.getNearPlate() + " side.");
+		//System.out.println("The central scale has our team on the " + fms.getMidPlate() + " side.");
 		// Y axis is upside-down, -1.0 is up and 1.0 is down.		
-		double newSpeed = invNum * (leftStick.getY() * (leftStick.getThrottle() - 1) / 2); // Left stick y / throttle controls speed
+		double newSpeed = invNum * (0.5 - throttle.getRawAxis(0) * 0.5) * stick.getRawAxis(1) * -0.7; //(leftStick.getY() * (leftStick.getThrottle() - 1) / 2); // Left stick y / throttle controls speed
+		/* if(throttle.getRawButton(23)) {
+			newSpeed *= -1;
+		} else if(!throttle.getRawButton(21)) {
+			newSpeed = 0.0;
+		}*/
 		/* 0 at top, 1 at bottom. */
-		MAX_ACCELERATION = (lift.getCurrentPos() / 1.2e8 + 1.0) * 0.4 + 0.8;
+		MAX_ACCELERATION = (/*lift.getCurrentPos()*/ 1.2e8 / 1.2e8 + 1.0) * 0.4 + 0.8;
 		if (rightStick.getRawButton(11)) {
 			//MAX_ACCELERATION = 999.0;
 		}
@@ -190,25 +202,37 @@ public class Robot extends IterativeRobot {
 			newSpeed = Math.max(newSpeed, previousSpeed - MAX_ACCELERATION * secondsSinceLastUpdate);
 		}
 		
-		drive.set(newSpeed, rightStick.getX() * 0.5); // Right stick x controls turn
+		// TODO: REPLACE THIS WITH A SPECIFIC BUTTON!
+		double turnSpeed = (stick.getRawButton(5) ? 0.25 : 0.45) * stick.getRawAxis(0); //(-throttle.getRawAxis(0) + 1.0) / 2.0;
+		drive.set(newSpeed, turnSpeed);//gamepad.getRawAxis(2) * turnSpeed); // Right stick x controls turn
 		previousSpeed = newSpeed;
 
-		if (leftStick.getRawButton(1)) { // Left trigger opens claw
-			claw.expandClaw();
-		} else if (rightStick.getRawButton(1)) { // Right trigger closes claw
-			claw.contractClaw();
+		if (stick.getRawButton(1)) { // Trigger toggles claw
+			if(!triggerWasPressed) {
+				claw.toggleClaw();
+			}
+			triggerWasPressed = true;
+		} else {
+			triggerWasPressed = false;
 		}
 
-		if (leftStick.getRawButton(6)) { // Go up when left 6 is pressed
+		if (stick.getRawButton(11)) { // Go up when left 6 is pressed
 			lift.setLiftSpeed(1.0);
 			liftWasMoving = true;
-		} else if (leftStick.getRawButton(4)) { // Go down when left 4 is pressed
+		} else if (stick.getRawButton(13)) { // Go down when left 4 is pressed
 			lift.setLiftSpeed(-1.0);
 			liftWasMoving = true;
-		} else if (liftWasMoving) {
+		}/* else if(stick.getRawButton(13)) { // TODO: Set this to a specific button!
+			lift.moveTo(AutonomousMode.LIFT_LOWEST_HEIGHT);
+		} else if(stick.getRawButton(11)) { // TODO: Set this to a specific button!
+			lift.moveTo(AutonomousMode.LIFT_MAX_HEIGHT);
+		} else if(stick.getRawButton(3) || stick.getRawButton(12) || stick.getRawButton(14)) { // TODO: Set this to a specific button!
+			lift.moveTo(AutonomousMode.LIFT_WING_HEIGHT);
+		} */else if (!lift.isMovingToTarget()) {
 			lift.holdCurrentPosition();
 			liftWasMoving = false;
 		}
+		System.out.println(lift.getCurrentPos());
 
 		double dt = ((double) (System.currentTimeMillis() - previousTime)) / 1000.0;
 		previousTime = System.currentTimeMillis();
@@ -222,7 +246,8 @@ public class Robot extends IterativeRobot {
 		drive.enableMechanicalCompensation();
 		drive.resetEncoders();
 	}
-
+	
+	DigitalInput input = new DigitalInput(9);
 	/**
 	 * This function is called periodically during test mode.
 	 */
@@ -230,8 +255,15 @@ public class Robot extends IterativeRobot {
 	public void testPeriodic() {
 		double dt = ((double) (System.currentTimeMillis() - previousTime)) / 1000.0;
 		previousTime = System.currentTimeMillis();
+		System.out.println(lift.forwardLimitPressed());
 		for (HardwareModule module : modules) {
 			module.periodic(dt);
 		}
+//		for(int i = 0; i < throttle.getButtonCount(); i++) {
+//			System.out.print(i);
+//			System.out.print(": ");
+//			System.out.print(throttle.getRawButton(i));
+//			System.out.print
+//		}
 	}
 }

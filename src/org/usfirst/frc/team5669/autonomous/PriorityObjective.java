@@ -36,10 +36,11 @@ public class PriorityObjective {
 		} else if (modifier == 2) {
 			priority = Priority.SCALE;
 		} else {
-			if (scaleSide == startSide) {
-				priority = Priority.SCALE;
-			} else if (switchSide == startSide) {
+			//TODO: I changed this to prioritize switch if both sw and sc are owned
+			if (switchSide == startSide) {
 				priority = Priority.SWITCH;
+			} else if (scaleSide == startSide) {
+				priority = Priority.SCALE;
 			} else {
 				priority = Priority.SWITCH;
 			}

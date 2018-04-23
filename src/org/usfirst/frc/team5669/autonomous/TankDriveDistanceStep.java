@@ -16,8 +16,17 @@ public class TankDriveDistanceStep extends AutonomousStep {
 		this.rightTarget = (int) (distance * TankDrive.COUNTS_PER_INCH);
 	}
 
+	public TankDriveDistanceStep(TankDrive tankDrive, double speed, double distance, long timeLimit) {
+		this.tankDrive = tankDrive;
+		this.speed = speed;
+		this.leftTarget = (int) (distance * TankDrive.COUNTS_PER_INCH);
+		this.rightTarget = (int) (distance * TankDrive.COUNTS_PER_INCH);
+		this.maxDuration = timeLimit;
+	}
+
 	@Override
 	public void start() {
+		super.start();
 		tankDrive.resetEncoders();
 		System.out.println(tankDrive.getLeftEncoder());
 		System.out.println(((double) tankDrive.getLeftEncoder() / TankDrive.COUNTS_PER_INCH));
@@ -47,8 +56,9 @@ public class TankDriveDistanceStep extends AutonomousStep {
 	@Override
 	public boolean isDone() {
 		//System.out.println("DISTANCE: " + (tankDrive.getTurnCounter() / COUNTS_PER_INCH) + "in.");
-		return ((Math.abs(tankDrive.getLeftEncoder())) >= Math.abs(leftTarget)) &&
-				((Math.abs(tankDrive.getRightEncoder())) >= Math.abs(rightTarget));
+		return (((Math.abs(tankDrive.getLeftEncoder())) >= Math.abs(leftTarget)) &&
+				((Math.abs(tankDrive.getRightEncoder())) >= Math.abs(rightTarget)))
+				|| super.isDone();
 	}
 	
 	@Override

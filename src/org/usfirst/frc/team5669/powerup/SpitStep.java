@@ -13,4 +13,9 @@ public class SpitStep extends AutonomousStep {
 	public void start() {
 		claw.expandClaw();
 	}
+	
+	@Override
+	public boolean isDone() {
+		return true;
+	}
 }
