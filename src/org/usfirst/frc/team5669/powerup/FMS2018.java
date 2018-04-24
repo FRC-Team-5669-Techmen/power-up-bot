@@ -7,14 +7,14 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class FMS2018 implements HardwareModule {
 	public enum Side {
-		LEFT, RIGHT, UNKNOWN;
+		LEFT, RIGHT, MID, UNKNOWN;
 	}
-	
+
 	private class GetterThread extends Thread {
 		public void run() {
-			while(true) {
+			while (true) {
 				String data = DriverStation.getInstance().getGameSpecificMessage();
-				if(data.length() < 3) {
+				if (data.length() < 3) {
 					// Wait and try again.
 					try {
 						sleep(50);
@@ -32,25 +32,25 @@ public class FMS2018 implements HardwareModule {
 			}
 		}
 	}
-	
+
 	private Side nearPlate = Side.UNKNOWN, midPlate = Side.UNKNOWN, farPlate = Side.UNKNOWN;
 	private GetterThread thread = null;
-	
+
 	public FMS2018() {
 	}
-	
+
 	private void startGetterThread() {
-		if(thread == null) {
+		if (thread == null) {
 			thread = new GetterThread();
 			thread.start();
 		}
 	}
-	
+
 	public void setup() {
 		startGetterThread();
 	}
-	
-	public void periodic() {
+
+	public void periodic(double dt) {
 		SmartDashboard.putBoolean("FMS2018.nearLeft", nearPlate == Side.LEFT);
 		SmartDashboard.putBoolean("FMS2018.nearRight", nearPlate == Side.RIGHT);
 		SmartDashboard.putBoolean("FMS2018.midLeft", midPlate == Side.LEFT);
@@ -58,19 +58,19 @@ public class FMS2018 implements HardwareModule {
 		SmartDashboard.putBoolean("FMS2018.farLeft", farPlate == Side.LEFT);
 		SmartDashboard.putBoolean("FMS2018.farRight", farPlate == Side.RIGHT);
 	}
-	
+
 	public void stop() {
 	}
-	
+
 	public Side getNearPlate() {
-		return nearPlate;
+		return nearPlate; //return nearPlate;
 	}
-	
+
 	public Side getMidPlate() {
-		return midPlate;
+		return midPlate; //return midPlate;
 	}
-	
+
 	public Side getFarPlate() {
-		return farPlate;
+		return farPlate; //return farPlate;
 	}
 }
